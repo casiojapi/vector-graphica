@@ -1,8 +1,8 @@
 html, body {
     font-family: 'Courier New', Courier, monospace;
-    background-color: rgb(243, 113, 255);
+    background-color: rgb(246, 144, 255);
     color: rgb(0, 0, 0);
-    height: 100%;
+    /* height: 100%; */
     /* align-items: center; */
 }
 
@@ -10,14 +10,13 @@ html, body {
     width: 70%;
     text-align: left;
     font-size: 1.3em;
-    padding: 4em;
+    padding: 4em 0em;
     margin: auto;
 }
 
 .sample {
     display: block;
-    width: 900px;
+    width: 60%;
     margin: auto;
-    padding: 2em;
-
+    padding: 2em 0em;
 }
