@@ -1,3 +1,3 @@
-# vector graphica
+# [vector graphica](https://maximosan.github.io/vector_graphica)
 
-i want this to be a demoscene styled scene generator and renderer that creates random images that may be used for artwork on vaporwave related content.
+a (work in progress) demoscene scene generator and renderer that creates random images that may be potentially used as artworks for vaporwave related content.

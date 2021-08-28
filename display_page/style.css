@@ -1,0 +1,23 @@
+html, body {
+    font-family: 'Courier New', Courier, monospace;
+    background-color: rgb(243, 113, 255);
+    color: rgb(0, 0, 0);
+    height: 100%;
+    /* align-items: center; */
+}
+
+.intro {
+    width: 70%;
+    text-align: left;
+    font-size: 1.3em;
+    padding: 4em;
+    margin: auto;
+}
+
+.sample {
+    display: block;
+    width: 900px;
+    margin: auto;
+    padding: 2em;
+
+}
