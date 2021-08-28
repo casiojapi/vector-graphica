@@ -1,9 +1,9 @@
 all: pbm pgm
 	
 pbm:
-	convert ./iteration_1_samples/pbm/*.pbm ./iteration_1_samples/jpg/*.jpg
+	convert ./samples/iteration_1/pbm/*.pbm ./samples/iteration_1/jpg/*.jpg
 pgm:
-	convert ./iteration_2_samples/pgm/*.pgm ./iteration_2_samples/jpg/*.jpg
+	convert ./samples/iteration_2/pgm/*.pgm ./samples/iteration_2/jpg/*.jpg
 	
 clean:
-	rm a.out ./iteration_*_samples/jpg/*.jpg*
+	rm a.out ./samples/iteration_*/jpg/*.jpg*
