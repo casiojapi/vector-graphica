@@ -2,16 +2,26 @@ html, body {
     font-family: 'Courier New', Courier, monospace;
     background-color: rgb(246, 144, 255);
     color: rgb(0, 0, 0);
-    /* height: 100%; */
-    /* align-items: center; */
+
+}
+
+
+.samples {
+    overflow: hidden;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
 }
 
 .intro {
     width: 70%;
     text-align: left;
-    font-size: 1.3em;
+    font-size: 1.3em; 
     padding: 4em 0em;
     margin: auto;
+}
+
+.samples h2 {
+    text-align: center;
 }
 
 .sample {
@@ -20,3 +30,19 @@ html, body {
     margin: auto;
     padding: 2em 0em;
 }
+
+@media screen and (max-width: 500px) {
+    .intro {
+        margin: 0%;
+        padding: 2em 0em 1em 0em;
+    }
+    .sample {
+        width: 85%;
+        padding: 0.5em 0em;
+        margin:0px;
+    }
+    .samples h2 {
+        text-align: left;
+    }
+}
+ 
