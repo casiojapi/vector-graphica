@@ -1,11 +1,13 @@
-all: pbm pgm
-	
+all: pbm pgm ppm
+
+app:
+	gcc -o app *.c -lm
 pbm:
 	convert ./renders/iteration_1/pbm/*.pbm ./renders/iteration_1/jpg/*.jpg
 pgm:
 	convert ./renders/iteration_2/pgm/*.pgm ./renders/iteration_2/jpg/*.jpg
 ppm:
-	convert ./renders/iteration_3.5/ppm/*.ppm ./renders/iteration_3.5/jpg/*.jpg
+	convert ./renders/iteration_4/ppm/*.ppm ./renders/iteration_4/jpg/*.jpg
 	
 clean:
 	rm a.out app ./renders/iteration_*/jpg/*.jpg*
