@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <math.h>
 
+#include <time.h>
+#include <stdlib.h>
+
 #include "vector.h"
 
 vec_t normalizar(vec_t a) {
@@ -26,4 +29,12 @@ double producto_interno(vec_t a, vec_t b) {
 
 double norma(vec_t a) {
     return sqrt(producto_interno(a, a));
+}
+
+vec_t vec_rand_init() {
+    vec_t vec;
+    vec.x = drand48() * 15 * ((rand() % 10) - 5);
+    vec.y = drand48() * 15 *((rand() % 10) - 5);
+    vec.z = 2;
+    return vec;
 }

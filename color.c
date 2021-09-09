@@ -12,7 +12,7 @@ color_t color_init_rgb(double r, double g, double b) {
     return c;
 }
 
-color_t color_random_init() {
+color_t color_rand_init() {
     color_t c;
     c.r = drand48();
     c.g = drand48();
