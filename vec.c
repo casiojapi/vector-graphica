@@ -4,7 +4,7 @@
 #include <time.h>
 #include <stdlib.h>
 
-#include "vector.h"
+#include "vec.h"
 
 vec_t vec_normalize(vec_t a) {
     double n = vec_norm(a);

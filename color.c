@@ -1,7 +1,7 @@
 
 #include <stdlib.h>
 #include "color.h"
-#include "vector.h"
+#include "vec.h"
 
 
 color_t color_init_rgb(double r, double g, double b) {
