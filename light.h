@@ -1,7 +1,7 @@
 #ifndef LUZ_H
 #define LUZ_H
 
-#include "vector.h"
+#include "vec.h"
 #include "color.h"
 
 typedef struct {

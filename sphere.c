@@ -1,22 +1,22 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include "esfera.h"
-#include "vector.h"
+#include "sphere.h"
+#include "vec.h"
 #include "color.h"
 
-int intersecta_esfera(const esfera_t *e, vec_t o, vec_t d) {
-    vec_t co = resta(e->c, o);
-    double cc = producto_interno(co, co);
-    double cd = producto_interno(co, d);
+int intersecta_esfera(const sphere_t *e, vec_t o, vec_t d) {
+    vec_t co = vec_diff(e->c, o);
+    double cc = vec_dotprod(co, co);
+    double cd = vec_dotprod(co, d);
     return cd * cd - cc + e->r * e->r >= 0;
 }
 
-double distancia_esfera(const esfera_t *e, vec_t o, vec_t d) {
-    vec_t co = resta(e->c, o);
+double sphere_distance(const sphere_t *e, vec_t o, vec_t d) {
+    vec_t co = vec_diff(e->c, o);
 
-    double cc = producto_interno(co, co);
-    double b = producto_interno(co, d);
+    double cc = vec_dotprod(co, co);
+    double b = vec_dotprod(co, d);
     double disc = b * b - cc + e->r * e->r;
 
     if (disc <= 0)
@@ -37,16 +37,16 @@ double distancia_esfera(const esfera_t *e, vec_t o, vec_t d) {
 //     double r;
 //     color_t color;
 //     double ka, kd, i;
-// } esfera_t;
+// } sphere_t;
 
-// esfera_t* esferas_init(size_t n) {
-//     esfera_t es[n];
+// sphere_t* spheres_init(size_t n) {
+//     sphere_t es[n];
 //     for (size_t i = 0; i < n; i++) {
 //         es[0].r = (rand() % 10000) *
 //     }
 // }
 
-// esfera_t esferas[] = {
+// sphere_t spheres[] = {
 //     {{0, 4, 2.4}, .3, {1, 1, 1}, 1, 1},
 //     {{1, -.4, 3}, 1, {1, 121, 1}, 1, 1},
 //     {{-2, -.26, 3}, .3, {1, 2, 0}, 1, .8},

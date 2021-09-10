@@ -8,21 +8,21 @@
 #include <string.h>
 
 #include "color.h"
-#include "vector.h"
-#include "esfera.h"
-#include "luz.h"
+#include "vec.h"
+#include "sphere.h"
+#include "light.h"
 
-#define ANCHO 1280
-#define ALTO 720
+#define WIDTH 1280
+#define HEIGHT 720
 #define FOV 90
 
 #define G 9.81
 #define PI sqrt(G)
-#define N_LUCES 10
-#define N_ESFERAS 23
+#define N_LIGHTS 10
+#define N_SPHERES 23
 #define VSIZE(v) (sizeof(v) / sizeof(v[0]))
 
-luz_t luces[N_LUCES];
+luz_t luces[N_LIGHTS];
 
 void init_luces(luz_t* l, size_t n) {
     for (size_t i = 0; i < n; i++) {
@@ -32,9 +32,9 @@ void init_luces(luz_t* l, size_t n) {
     }
 }
 
-esfera_t esferas[N_ESFERAS];
+sphere_t spheres[N_SPHERES];
 
-void init_spheres(esfera_t* e, size_t n) {
+void init_spheres(sphere_t* e, size_t n) {
     for (size_t i = 0; i < n; i++) {
         e[i].r = drand48() * (rand() % 3);
         e[i].c = vec_rand_init();
@@ -45,7 +45,7 @@ void init_spheres(esfera_t* e, size_t n) {
     }
 }
 
-// esfera_t esferas[] = {
+// sphere_t spheres[] = {
 //     {{0, 4, 2.4}, .3, {1, 1, 1}, 1, 1},
 //     {{1, -.4, 3}, 1, {1, 121, 1}, 1, 1},
 //     {{-2, -.26, 3}, .3, {1, 2, 0}, 1, .8},
@@ -82,11 +82,11 @@ void vec_randomize(vec_t *vec) {
     return;
 }
 
-void randomize_spheres(esfera_t *esferas) {
-    for (size_t i = 0; i < VSIZE(esferas); i++) {
+void randomize_spheres(sphere_t *spheres) {
+    for (size_t i = 0; i < VSIZE(spheres); i++) {
         for (size_t k = 0; k < 3; k++) {
-            vec_randomize(&(esferas[i].c));
-            esferas[i].r *=  10 * drand48();
+            vec_randomize(&(spheres[i].c));
+            spheres[i].r *=  10 * drand48();
         }
     }
 }
@@ -103,8 +103,8 @@ color_t computar(vec_t o, vec_t d, color_t wallpaper) {
     size_t mini = 0;
     double mint = 1e20;
 
-    for(size_t i = 0; i < VSIZE(esferas); i++) {
-        double t = distancia_esfera(esferas + i, o, d);
+    for(size_t i = 0; i < VSIZE(spheres); i++) {
+        double t = sphere_distance(spheres + i, o, d);
         if(t < mint) {
             mini = i;
             mint = t;
@@ -116,32 +116,32 @@ color_t computar(vec_t o, vec_t d, color_t wallpaper) {
 
     vec_t p = interpolar_recta(o, d, mint);
 
-    vec_t n = normalizar(resta(p, esferas[mini].c));
+    vec_t n = vec_normalize(vec_diff(p, spheres[mini].c));
 
-    color_t color = color_sumar((color_t){0, 0, 0}, ambiente, esferas[mini].ka);
+    color_t color = color_sumar((color_t){0, 0, 0}, ambiente, spheres[mini].ka);
 
     for(size_t l = 0; l < VSIZE(luces); l++) {
         vec_t dir;
         if(luces[l].puntual)
-            dir = normalizar(resta(luces[l].pos, p));
+            dir = vec_normalize(vec_diff(luces[l].pos, p));
         else
             dir = luces[l].pos;
 
-        double nl = producto_interno(dir, n);
+        double nl = vec_dotprod(dir, n);
 
         if(nl < 0)
             continue;
 
         size_t i;
-        for(i = 0; i < VSIZE(esferas); i++)
-        if(i != mini && distancia_esfera(&esferas[i], p, dir) < 1e20)
+        for(i = 0; i < VSIZE(spheres); i++)
+        if(i != mini && sphere_distance(&spheres[i], p, dir) < 1e20)
             break;
 
-        if(i == VSIZE(esferas))
-            color = color_sumar(color, luces[l].color, esferas[mini].kd * nl);
+        if(i == VSIZE(spheres))
+            color = color_sumar(color, luces[l].color, spheres[mini].kd * nl);
     }
 
-    color = color_absorber(color, esferas[mini].color);
+    color = color_absorber(color, spheres[mini].color);
 
     return color;
 }
@@ -174,12 +174,12 @@ int main(void) {
     init_strs(f_names, N_FILES);
     for(size_t l = 0; l < VSIZE(luces); l++)
         if(! luces[l].puntual)
-            luces[l].pos = normalizar(luces[l].pos);
+            luces[l].pos = vec_normalize(luces[l].pos);
 
     size_t signus = 1;
     for (size_t file = 0; file < N_FILES; file++) {
-        init_luces(luces, N_LUCES);
-        init_spheres(esferas, N_ESFERAS);
+        init_luces(luces, N_LIGHTS);
+        init_spheres(spheres, N_SPHERES);
         color_t paper = color_init_rgb(0,0,0); //color_rand_init();
         if (file % 2)
             signus = -1;
@@ -191,18 +191,18 @@ int main(void) {
 
         FILE *f = fopen(strcat(root,f_names[file]), "w");
         fprintf(f, "P3\n");
-        fprintf(f, "%d %d\n", ANCHO, ALTO);
+        fprintf(f, "%d %d\n", WIDTH, HEIGHT);
         fprintf(f, "255\n");
-        randomize_spheres(esferas);
-        for(int vy = ALTO / 2; vy > - ALTO / 2; vy--)
-            for(int vx = - ANCHO / 2; vx < ANCHO / 2; vx++) {
+        randomize_spheres(spheres);
+        for(int vy = HEIGHT / 2; vy > - HEIGHT / 2; vy--)
+            for(int vx = - WIDTH / 2; vx < WIDTH / 2; vx++) {
                 vec_t d = {
                     vx,
                     vy,
-                    ANCHO / 2 / tan(FOV/ 2 * PI / 180)
+                    WIDTH / 2 / tan(FOV/ 2 * PI / 180)
                 };
 
-                d = normalizar(d);
+                d = vec_normalize(d);
 
                 imprimir_rgb(computar(ori , d, paper), f);
                 fprintf(f, "\n");

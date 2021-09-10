@@ -2,8 +2,8 @@
 #include <math.h>
 #include <assert.h>
 
-#define ANCHO 1280
-#define ALTO 1000
+#define WIDTH 1280
+#define HEIGHT 1000
 #define FOV 90
 
 #define G 9.81
@@ -146,17 +146,17 @@ int get_intensity(const float o[3], const float d[3], int env_light) {
 int main(void) {
 
     printf("P2\n");
-    printf("%d %d\n", ANCHO, ALTO);
+    printf("%d %d\n", WIDTH, HEIGHT);
     printf("255\n");
 
     normalize(luz);
 
-    for(int vy = ALTO / 2; vy > - ALTO / 2; vy--)
-        for(int vx = - ANCHO / 2; vx < ANCHO / 2; vx++) {
+    for(int vy = HEIGHT / 2; vy > - HEIGHT / 2; vy--)
+        for(int vx = - WIDTH / 2; vx < WIDTH / 2; vx++) {
             float d[3] = {
                 vx,
                 vy,
-                ANCHO / 2 / tan(FOV/ 2 * PI / 180)
+                WIDTH / 2 / tan(FOV/ 2 * PI / 180)
             };
 
             normalize(d);
