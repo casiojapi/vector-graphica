@@ -15,7 +15,7 @@ vec_t vec_diff(vec_t a, vec_t b) {
     return (vec_t){a.x - b.x, a.y - b.y, a.z - b.z};
 }
 
-vec_t interpolar_recta(vec_t o, vec_t d, double t) {
+vec_t inter_line(vec_t o, vec_t d, double t) {
     return (vec_t){o.x + t * d.x, o.y + t * d.y, o.z + t * d.z};
 }
 
@@ -33,8 +33,8 @@ double vec_norm(vec_t a) {
 
 vec_t vec_rand_init() {
     vec_t vec;
-    vec.x = drand48() * 15 * ((rand() % 10) - 5);
-    vec.y = drand48() * 15 *((rand() % 10) - 5);
-    vec.z = 2;
+    vec.x = drand48() * 1.5 * ((rand() % 10) - 5);
+    vec.y = drand48() * 2 *((rand() % 10) - 5);
+    vec.z = rand() % 3;
     return vec;
 }

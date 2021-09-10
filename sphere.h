@@ -12,7 +12,7 @@ typedef struct sphere {
 } sphere_t;
 
 
-int intersecta_esfera(const sphere_t *e, vec_t o, vec_t d);
+int sphere_intersect(const sphere_t *e, vec_t o, vec_t d);
 double sphere_distance(const sphere_t *e, vec_t o, vec_t d);
 
 #endif
