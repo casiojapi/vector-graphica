@@ -130,16 +130,22 @@ void init_strs(char strs[][256], size_t n_strs) {
 #define N_FILES 14
 int main(void) {
     srand(time(NULL));
-    
+    printf("starting app");
     char f_names[N_FILES][256];
     init_strs(f_names, N_FILES);
-    for(size_t l = 0; l < VSIZE(lights); l++)
-        if(! lights[l].puntual)
-            lights[l].pos = vec_normalize(lights[l].pos);
+    printf("...\n");
 
+    
+   
     size_t signus = 1;
     for (size_t file = 0; file < N_FILES; file++) {
+        printf("setting up file %zd", file + 1);
         init_lights(lights, N_LIGHTS);
+
+        for(size_t l = 0; l < VSIZE(lights); l++)
+            if(! lights[l].puntual)
+                lights[l].pos = vec_normalize(lights[l].pos);
+
         init_spheres(spheres, N_SPHERES);
 
         if (file % 2)
@@ -148,19 +154,20 @@ int main(void) {
             signus = 1;
         vec_t ori = (vec_t){0,0,-2};
         char * new_str;
-        char root[256] = "3";
+        char root[256] = "./renders/ppm/";
 
         FILE *f = fopen(strcat(root,f_names[file]), "w");
+
         fprintf(f, "P3\n");
         fprintf(f, "%d %d\n", WIDTH, HEIGHT);
         fprintf(f, "255\n");
+
         randomize_spheres(spheres);
+
         color_t paper = color_init_rgb(drand48(), drand48(), drand48());
 
         for(int vy = HEIGHT / 2; vy > - HEIGHT / 2; vy--) {
-
             for(int vx = - WIDTH / 2; vx < WIDTH / 2; vx++) {
-
                 vec_t d = {
                     vx,
                     vy,
@@ -173,8 +180,9 @@ int main(void) {
                 fprintf(f, "\n");
             }
         }
+        printf("\n");
+
         fclose(f);
     }
     return 0;
 }
-
