@@ -11,15 +11,18 @@
 #include "sphere.h"
 #include "light.h"
 
-#define WIDTH 1080
-#define HEIGHT 1350
-#define FOV 90
+#define WIDTH 720
+#define HEIGHT 720
+#define FOV 60
 
 #define G 9.81
 #define PI sqrt(G)
-#define N_LIGHTS 10
-#define N_SPHERES 23
+#define N_LIGHTS 8
+#define N_SPHERES 12
 #define VSIZE(v) (sizeof(v) / sizeof(v[0]))
+
+#define N_FILES 20
+
 
 light_t lights[N_LIGHTS];
 
@@ -67,7 +70,6 @@ void imprimir_rgb(color_t c, FILE *f) {
 
 color_t computar(vec_t o, vec_t d, color_t wallpaper) {
     color_t ambiente = color_init_rgb(0, 0, 0);
-
     size_t mini = 0;
     double mint = 1e20;
 
@@ -96,7 +98,6 @@ color_t computar(vec_t o, vec_t d, color_t wallpaper) {
             dir = lights[l].pos;
 
         double nl = vec_dotprod(dir, n);
-
         if(nl < 0)
             continue;
 
@@ -115,7 +116,7 @@ color_t computar(vec_t o, vec_t d, color_t wallpaper) {
 }
 
 
-void init_strs(char strs[][256], size_t n_strs) {
+void init_strs(char strs[N_FILES][256], size_t n_strs) {
     int val_a, val_b;
     for (size_t i = 0; i < n_strs; i++) {
         strs[i][0] = '\0';
@@ -126,18 +127,47 @@ void init_strs(char strs[][256], size_t n_strs) {
     }
 }
 
+#define STR_LENGTH 256
+char*** init_strs_dyn(size_t n) {
+    int a, b;
+    char ***strs = malloc(sizeof(char**) * n);
+    
+    for (size_t i = 0; i < n; i++) {
+        strs[i] = malloc(sizeof(char*));
+        strs[i][0] = malloc(sizeof(char) * STR_LENGTH);
+    }
+    for (size_t i = 0; i < n; i++) {
+        *(strs[i])[0] = '\0';
+        a = rand();
+        sprintf(*(strs[i]), "%d_%zd.ppm", a, i);
+        *(strs[i])[strlen(*(strs[i]))] = '\0';
+    }
+}
+
+void free_strs(char** strs, size_t n) {
+    for (size_t i = 0; i < n; i++)
+        free(strs[i]);
+    free(strs);
+    
+}
+
 #include <time.h>
-#define N_FILES 14
 int main(void) {
     srand(time(NULL));
     printf("starting app");
     char f_names[N_FILES][256];
-    init_strs(f_names, N_FILES);
-    printf("...\n");
+    // char **f_names;
+    // f_names = malloc(sizeof(char*));
+    // f_names[0] = malloc(sizeof(char) * 256);
 
-    
+    init_strs(f_names, N_FILES);
+
+    // char*** f_names = init_strs_dyn(N_FILES);
+    printf("...\n");
    
     size_t signus = 1;
+
+    size_t file = 0;
     for (size_t file = 0; file < N_FILES; file++) {
         printf("setting up file %zd", file + 1);
         init_lights(lights, N_LIGHTS);
@@ -153,7 +183,7 @@ int main(void) {
         else 
             signus = 1;
         vec_t ori = (vec_t){0,0,-2};
-        char * new_str;
+        char *new_str;
         char root[256] = "./renders/ppm/";
 
         FILE *f = fopen(strcat(root,f_names[file]), "w");
@@ -184,5 +214,8 @@ int main(void) {
 
         fclose(f);
     }
+    // free_strs(f_names, N_FILES);
+    // free(f_names[0]);
+    // free(f_names);
     return 0;
 }

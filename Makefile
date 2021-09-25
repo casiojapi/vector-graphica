@@ -1,4 +1,4 @@
-all: app run ppm
+all: app run ppm clean_ppm
 
 app:
 	gcc -o app *.c -lm
@@ -6,5 +6,10 @@ run:
 	./app
 ppm:
 	convert ./renders/ppm/*.ppm ./renders/jpg/*.jpg
+clean_ppm:
+	rm ./renders/ppm/*.ppm 
+clean_jpg:
+	rm ./renders/jpg/*.jpg
 clean:
-	rm a.out app ./renders/jpg/*.jpg ./renders/ppm/*.ppm 
+	rm app 
+wipe: clean clean_jpg
