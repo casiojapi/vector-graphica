@@ -5,11 +5,16 @@ app:
 run:
 	./app
 ppm:
-	convert *.ppm *.jpg
+	convert *.ppm -set filename: "%t" %[filename:].jpg
+
+
 clean_ppm:
-	rm ./renders/ppm/*.ppm 
+	rm *.ppm 
 clean_jpg:
-	rm ./renders/jpg/*.jpg
+	rm *.jpg
 clean:
 	rm app 
-wipe: clean clean_jpg
+wipe: clean_jpg clean clean_ppm
+
+move:
+	mv *.jpg ./renders/

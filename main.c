@@ -11,15 +11,16 @@
 #include "sphere.h"
 #include "light.h"
 
-#define WIDTH 720
-#define HEIGHT 720
-#define FOV 60
+#define WIDTH 1920
+#define HEIGHT 1080
+#define FOV 90
 
 #define G 9.81
 #define PI sqrt(G)
-#define N_LIGHTS 8
-#define N_SPHERES 12
+#define N_LIGHTS 5
+#define N_SPHERES 6
 #define VSIZE(v) (sizeof(v) / sizeof(v[0]))
+#define ORIGIN -3.3
 
 #define N_FILES 10
 
@@ -29,6 +30,7 @@ light_t lights[N_LIGHTS];
 void init_lights(light_t* l, size_t n) {
     for (size_t i = 0; i < n; i++) {
         l[i].pos = vec_rand_init();
+        l[i].pos.z = -2;
         l[i].color = color_rand_init();
         l[i].puntual = i % 2 + 1;
     }
@@ -51,6 +53,7 @@ void vec_randomize(vec_t *vec) {
     vec->x *= (rand()) * drand48();
     vec->y *= (rand()) * drand48();
     vec->z *= (rand()) * drand48();
+    vec->z += 10;
 }
 
 void randomize_spheres(sphere_t *spheres) {
@@ -180,7 +183,9 @@ int main(void) {
             signus = -1;
         else 
             signus = 1;
-        vec_t ori = (vec_t){0,0,-2};
+        
+        // ORIGIN
+        vec_t ori = (vec_t){0,0, ORIGIN};
         char *new_str = malloc(256);
         char root[256] = "./renders/";
 

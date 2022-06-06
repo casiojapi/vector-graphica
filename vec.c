@@ -33,8 +33,8 @@ double vec_norm(vec_t a) {
 
 vec_t vec_rand_init() {
     vec_t vec;
-    vec.x = drand48() * 1.5 * ((rand() % 10) - 5);
-    vec.y = drand48() * 2 *((rand() % 10) - 5);
+    vec.x = drand48() * ((rand() % 10) - 5);
+    vec.y = drand48() *((rand() % 5) - 2.5);
     vec.z = rand() % 3;
     return vec;
 }
