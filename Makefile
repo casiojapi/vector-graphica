@@ -5,7 +5,7 @@ app:
 run:
 	./app
 ppm:
-	convert ./renders/ppm/*.ppm ./renders/jpg/*.jpg
+	convert *.ppm *.jpg
 clean_ppm:
 	rm ./renders/ppm/*.ppm 
 clean_jpg:

@@ -21,7 +21,7 @@
 #define N_SPHERES 12
 #define VSIZE(v) (sizeof(v) / sizeof(v[0]))
 
-#define N_FILES 20
+#define N_FILES 10
 
 
 light_t lights[N_LIGHTS];
@@ -156,8 +156,6 @@ int main(void) {
     srand(time(NULL));
     printf("starting app");
     char f_names[N_FILES][256];
-    // char **f_names;
-    // f_names = malloc(sizeof(char*));
     // f_names[0] = malloc(sizeof(char) * 256);
 
     init_strs(f_names, N_FILES);
@@ -183,10 +181,13 @@ int main(void) {
         else 
             signus = 1;
         vec_t ori = (vec_t){0,0,-2};
-        char *new_str;
-        char root[256] = "./renders/ppm/";
+        char *new_str = malloc(256);
+        char root[256] = "./renders/";
 
-        FILE *f = fopen(strcat(root,f_names[file]), "w");
+        new_str = strcpy(new_str, root);
+        strcat(new_str, f_names[file]);
+        printf("\n%s\n", new_str);
+        FILE *f = fopen(f_names[file], "w");
 
         fprintf(f, "P3\n");
         fprintf(f, "%d %d\n", WIDTH, HEIGHT);
