@@ -11,21 +11,23 @@
 #include "sphere.h"
 #include "light.h"
 
-#define WIDTH 1920
-#define HEIGHT 1080
-#define FOV 75
-
 #define G 9.81
 #define PI sqrt(G)
-#define N_LIGHTS 6
-#define N_SPHERES 8
+
 #define VSIZE(v) (sizeof(v) / sizeof(v[0]))
 #define ORIGIN -3.3
 
-
 #define STR_LENGTH 256
 
+#define WIDTH 1920
+#define HEIGHT 1080
+#define FOV 75
+#define N_LIGHTS 6
+#define N_SPHERES 8
 #define N_FILES 10
+
+
+
 
 
 light_t lights[N_LIGHTS];
@@ -147,8 +149,14 @@ int main(int argc, char const *argv[]) {
     uint16_t n_files;
     if (argc == 1)
         n_files = N_FILES;
-    else if ( argc == 3)
+    else if ( argc == 3) {
         n_files = (uint16_t) atoi(argv[2]);
+        if n_files < 1 {
+            fprintf(stderr, "NON-NEGATIVE NUMBERS, NON-ZERO NUMBERS. N >= 1 PLEASE GOD\n");
+            return 1;
+        }
+            
+    }
     else {
         fprintf(stderr, "wrong arguments.\nUse \'./vector-graphica\' or \'./vector-graphica -n <N_FILES>\'.\n");
         return 1;
