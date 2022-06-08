@@ -1,20 +1,23 @@
-all: app run ppm clean_ppm
+all: app
+run: run_app to_jpg clean_ppm
+
+convert: to_jpg clean_ppm
 
 app:
-	gcc -o app *.c -lm
-run:
-	./app
-ppm:
-	convert *.ppm -set filename: "%t" %[filename:].jpg
+	gcc -o vector-graphica *.c -std=c99 -Ofast -lm
+run_app:
+	./vector-graphica
+to_jpg:
+	convert renders/*.ppm -set filename: "%t" renders/%[filename:].jpg
 
 
 clean_ppm:
-	rm *.ppm 
-clean_jpg:
-	rm *.jpg
+	rm renders/*.ppm 
+clean_renders:
+	rm renders/*.jpg
 clean:
-	rm app 
-wipe: clean_jpg clean clean_ppm
+	rm vector-graphica 
+wipe: clean clean_renders clean_ppm
 
 move:
 	mv *.jpg ./renders/

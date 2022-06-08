@@ -13,14 +13,17 @@
 
 #define WIDTH 1920
 #define HEIGHT 1080
-#define FOV 90
+#define FOV 75
 
 #define G 9.81
 #define PI sqrt(G)
-#define N_LIGHTS 5
-#define N_SPHERES 6
+#define N_LIGHTS 6
+#define N_SPHERES 8
 #define VSIZE(v) (sizeof(v) / sizeof(v[0]))
 #define ORIGIN -3.3
+
+
+#define STR_LENGTH 256
 
 #define N_FILES 10
 
@@ -119,31 +122,14 @@ color_t computar(vec_t o, vec_t d, color_t wallpaper) {
 }
 
 
-void init_strs(char strs[N_FILES][256], size_t n_strs) {
+void init_strs(char strs[][256], size_t n_strs) {
     int val_a, val_b;
     for (size_t i = 0; i < n_strs; i++) {
         strs[i][0] = '\0';
         val_a = rand();
         val_b = rand();
-        sprintf(strs[i], "%d_%zd.ppm", val_a, i);
+        sprintf(strs[i], "renders/%d_%zd.ppm", val_a, i +1);
         strs[i][strlen(strs[i])] = '\0';
-    }
-}
-
-#define STR_LENGTH 256
-char*** init_strs_dyn(size_t n) {
-    int a, b;
-    char ***strs = malloc(sizeof(char**) * n);
-    
-    for (size_t i = 0; i < n; i++) {
-        strs[i] = malloc(sizeof(char*));
-        strs[i][0] = malloc(sizeof(char) * STR_LENGTH);
-    }
-    for (size_t i = 0; i < n; i++) {
-        *(strs[i])[0] = '\0';
-        a = rand();
-        sprintf(*(strs[i]), "%d_%zd.ppm", a, i);
-        *(strs[i])[strlen(*(strs[i]))] = '\0';
     }
 }
 
@@ -155,22 +141,33 @@ void free_strs(char** strs, size_t n) {
 }
 
 #include <time.h>
-int main(void) {
+int main(int argc, char const *argv[]) {
     srand(time(NULL));
-    printf("starting app");
-    char f_names[N_FILES][256];
+    printf("starting vector-graphica.");
+    uint16_t n_files;
+    if (argc == 1)
+        n_files = N_FILES;
+    else if ( argc == 3)
+        n_files = (uint16_t) atoi(argv[2]);
+    else {
+        fprintf(stderr, "wrong arguments.\nUse \'./vector-graphica\' or \'./vector-graphica -n <N_FILES>\'.\n");
+        return 1;
+    }
+    
+    
+    char f_names[n_files][256];
     // f_names[0] = malloc(sizeof(char) * 256);
-
-    init_strs(f_names, N_FILES);
+    init_strs(f_names, n_files);
 
     // char*** f_names = init_strs_dyn(N_FILES);
-    printf("...\n");
+    printf("\n");
    
     size_t signus = 1;
 
     size_t file = 0;
-    for (size_t file = 0; file < N_FILES; file++) {
-        printf("setting up file %zd", file + 1);
+    for (size_t file = 0; file < n_files; file++) {
+        printf("setting up file: %zd/%hu\t", file + 1, n_files);
+
         init_lights(lights, N_LIGHTS);
 
         for(size_t l = 0; l < VSIZE(lights); l++)
@@ -178,20 +175,20 @@ int main(void) {
                 lights[l].pos = vec_normalize(lights[l].pos);
 
         init_spheres(spheres, N_SPHERES);
-
+   
         if (file % 2)
             signus = -1;
         else 
             signus = 1;
-        
+
         // ORIGIN
         vec_t ori = (vec_t){0,0, ORIGIN};
-        char *new_str = malloc(256);
-        char root[256] = "./renders/";
+        //char *new_str = malloc(256);
+        //char root[256] = "./renders/";
 
-        new_str = strcpy(new_str, root);
-        strcat(new_str, f_names[file]);
-        printf("\n%s\n", new_str);
+       // new_str = strcpy(new_str, root);
+       // strcat(new_str, f_names[file]);
+      //  printf("\n%s\n", new_str);
         FILE *f = fopen(f_names[file], "w");
 
         fprintf(f, "P3\n");
@@ -216,6 +213,7 @@ int main(void) {
                 fprintf(f, "\n");
             }
         }
+
         printf("\n");
 
         fclose(f);
