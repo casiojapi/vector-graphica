@@ -1,4 +1,6 @@
 
+#define _XOPEN_SOURCE 
+
 #include <stdlib.h>
 #include "color.h"
 #include "vec.h"

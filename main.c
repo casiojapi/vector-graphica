@@ -1,3 +1,5 @@
+#define _XOPEN_SOURCE 
+
 #include <stdio.h>
 #include <math.h>
 #include <stdbool.h>
@@ -127,6 +129,8 @@ color_t computar(vec_t o, vec_t d, color_t wallpaper) {
 void init_strs(char strs[][256], size_t n_strs) {
     int val_a, val_b;
     for (size_t i = 0; i < n_strs; i++) {
+        
+        printf("hola %zd\n", i);
         strs[i][0] = '\0';
         val_a = rand();
         val_b = rand();
@@ -151,7 +155,7 @@ int main(int argc, char const *argv[]) {
         n_files = N_FILES;
     else if ( argc == 3) {
         n_files = (uint16_t) atoi(argv[2]);
-        if n_files < 1 {
+        if (n_files < 1) {
             fprintf(stderr, "NON-NEGATIVE NUMBERS, NON-ZERO NUMBERS. N >= 1 PLEASE GOD\n");
             return 1;
         }
@@ -162,8 +166,10 @@ int main(int argc, char const *argv[]) {
         return 1;
     }
     
+
+
     
-    char f_names[n_files][256];
+    char f_names[n_files + 1][256];
     // f_names[0] = malloc(sizeof(char) * 256);
     init_strs(f_names, n_files);
 
@@ -176,11 +182,16 @@ int main(int argc, char const *argv[]) {
     for (size_t file = 0; file < n_files; file++) {
         printf("setting up file: %zd/%hu\t", file + 1, n_files);
 
+        printf("lights\n");
         init_lights(lights, N_LIGHTS);
 
+
+        printf("normal lights\n");
         for(size_t l = 0; l < VSIZE(lights); l++)
             if(! lights[l].puntual)
                 lights[l].pos = vec_normalize(lights[l].pos);
+
+        printf("spheres\n");
 
         init_spheres(spheres, N_SPHERES);
    
@@ -196,13 +207,22 @@ int main(int argc, char const *argv[]) {
 
        // new_str = strcpy(new_str, root);
        // strcat(new_str, f_names[file]);
-      //  printf("\n%s\n", new_str);
+        printf("\n%s\n", f_names[file]);
         FILE *f = fopen(f_names[file], "w");
-
+        if (f == NULL) {
+            fprintf(stderr, "error creating file\n");
+            return 1;
+        }
+        printf("file:  %zd) p1", file);
         fprintf(f, "P3\n");
+        printf("file:  %zd) p2", file);
+
         fprintf(f, "%d %d\n", WIDTH, HEIGHT);
+        printf("file:  %zd) p3", file);
+
         fprintf(f, "255\n");
 
+        printf("random spheres\n");
         randomize_spheres(spheres);
 
         color_t paper = color_init_rgb(drand48(), drand48(), drand48());
