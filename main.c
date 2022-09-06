@@ -8,10 +8,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "color.h"
-#include "vec.h"
-#include "sphere.h"
-#include "light.h"
+#include "common/color.h"
+#include "common/vec.h"
+#include "common/sphere.h"
+#include "common/light.h"
 
 #define G 9.81
 #define PI sqrt(G)
@@ -21,12 +21,12 @@
 
 #define STR_LENGTH 256
 
-#define WIDTH 1920
+#define WIDTH 1080
 #define HEIGHT 1080
-#define FOV 75
+#define FOV 90
 #define N_LIGHTS 6
 #define N_SPHERES 8
-#define N_FILES 10
+#define N_FILES 1
 
 
 
@@ -129,8 +129,6 @@ color_t computar(vec_t o, vec_t d, color_t wallpaper) {
 void init_strs(char strs[][256], size_t n_strs) {
     int val_a, val_b;
     for (size_t i = 0; i < n_strs; i++) {
-        
-        printf("hola %zd\n", i);
         strs[i][0] = '\0';
         val_a = rand();
         val_b = rand();
@@ -148,20 +146,21 @@ void free_strs(char** strs, size_t n) {
 
 #include <time.h>
 int main(int argc, char const *argv[]) {
-    srand(time(NULL));
-    printf("starting vector-graphica.");
+    srand("sdjkalfkjdsal;kfjdaslf;ksadlfk;a");
+    printf("starting vector-graphica...\n");
+
     uint16_t n_files;
-    if (argc == 1)
+
+    if (argc == 1) {
         n_files = N_FILES;
-    else if ( argc == 3) {
+    } else if ( argc == 3) {
         n_files = (uint16_t) atoi(argv[2]);
         if (n_files < 1) {
             fprintf(stderr, "NON-NEGATIVE NUMBERS, NON-ZERO NUMBERS. N >= 1 PLEASE GOD\n");
             return 1;
         }
             
-    }
-    else {
+    } else {
         fprintf(stderr, "wrong arguments.\nUse \'./vector-graphica\' or \'./vector-graphica -n <N_FILES>\'.\n");
         return 1;
     }
@@ -169,32 +168,31 @@ int main(int argc, char const *argv[]) {
 
 
     
-    char f_names[n_files + 1][256];
-    // f_names[0] = malloc(sizeof(char) * 256);
+    char f_names[n_files][256];
     init_strs(f_names, n_files);
-
-    // char*** f_names = init_strs_dyn(N_FILES);
-    printf("\n");
    
     size_t signus = 1;
 
     size_t file = 0;
+
     for (size_t file = 0; file < n_files; file++) {
-        printf("setting up file: %zd/%hu\t", file + 1, n_files);
 
-        printf("lights\n");
+        printf("creating: %s\t", f_names[file]);
+     
+        printf("lights ? ");
         init_lights(lights, N_LIGHTS);
-
-
-        printf("normal lights\n");
         for(size_t l = 0; l < VSIZE(lights); l++)
             if(! lights[l].puntual)
                 lights[l].pos = vec_normalize(lights[l].pos);
+        
+        printf("ok |\t");
 
-        printf("spheres\n");
 
+        printf("spheres ? ");
         init_spheres(spheres, N_SPHERES);
-   
+        randomize_spheres(spheres);
+        printf("ok |\t");
+
         if (file % 2)
             signus = -1;
         else 
@@ -202,30 +200,23 @@ int main(int argc, char const *argv[]) {
 
         // ORIGIN
         vec_t ori = (vec_t){0,0, ORIGIN};
-        //char *new_str = malloc(256);
-        //char root[256] = "./renders/";
 
-       // new_str = strcpy(new_str, root);
-       // strcat(new_str, f_names[file]);
-        printf("\n%s\n", f_names[file]);
+        
+        color_t paper = color_init_rgb(drand48(), drand48(), drand48());
+
+        printf("file ? ");
         FILE *f = fopen(f_names[file], "w");
         if (f == NULL) {
             fprintf(stderr, "error creating file\n");
             return 1;
         }
-        printf("file:  %zd) p1", file);
         fprintf(f, "P3\n");
-        printf("file:  %zd) p2", file);
-
         fprintf(f, "%d %d\n", WIDTH, HEIGHT);
-        printf("file:  %zd) p3", file);
-
         fprintf(f, "255\n");
 
-        printf("random spheres\n");
-        randomize_spheres(spheres);
+        
 
-        color_t paper = color_init_rgb(drand48(), drand48(), drand48());
+        
 
         for(int vy = HEIGHT / 2; vy > - HEIGHT / 2; vy--) {
             for(int vx = - WIDTH / 2; vx < WIDTH / 2; vx++) {
@@ -241,13 +232,9 @@ int main(int argc, char const *argv[]) {
                 fprintf(f, "\n");
             }
         }
-
-        printf("\n");
+        printf("ok ||\n");
 
         fclose(f);
     }
-    // free_strs(f_names, N_FILES);
-    // free(f_names[0]);
-    // free(f_names);
     return 0;
 }

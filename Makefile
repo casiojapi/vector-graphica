@@ -4,7 +4,7 @@ run: run_app to_jpg clean_ppm
 convert: to_jpg clean_ppm
 
 app:
-	gcc -o vector-graphica *.c -std=c99 -Ofast -lm
+	gcc -o vector-graphica *.c common/*.c -std=c99 -Ofast -lm
 run_app:
 	./vector-graphica
 to_jpg:
