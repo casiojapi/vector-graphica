@@ -1,5 +1,3 @@
-#define _XOPEN_SOURCE 
-
 #include <stdio.h>
 #include <math.h>
 #include <stdbool.h>
@@ -21,16 +19,12 @@
 
 #define STR_LENGTH 256
 
-#define WIDTH 1080
+#define WIDTH 1920
 #define HEIGHT 1080
-#define FOV 90
+#define FOV 75
 #define N_LIGHTS 6
 #define N_SPHERES 8
-#define N_FILES 1
-
-
-
-
+#define N_FILES 10
 
 light_t lights[N_LIGHTS];
 
@@ -146,53 +140,46 @@ void free_strs(char** strs, size_t n) {
 
 #include <time.h>
 int main(int argc, char const *argv[]) {
-    srand("sdjkalfkjdsal;kfjdaslf;ksadlfk;a");
-    printf("starting vector-graphica...\n");
-
+    srand(time(NULL));
+    printf("starting vector-graphica.");
     uint16_t n_files;
-
-    if (argc == 1) {
+    if (argc == 1)
         n_files = N_FILES;
-    } else if ( argc == 3) {
+    else if ( argc == 3) {
         n_files = (uint16_t) atoi(argv[2]);
         if (n_files < 1) {
             fprintf(stderr, "NON-NEGATIVE NUMBERS, NON-ZERO NUMBERS. N >= 1 PLEASE GOD\n");
             return 1;
         }
             
-    } else {
+    }
+    else {
         fprintf(stderr, "wrong arguments.\nUse \'./vector-graphica\' or \'./vector-graphica -n <N_FILES>\'.\n");
         return 1;
     }
     
-
-
     
     char f_names[n_files][256];
+    // f_names[0] = malloc(sizeof(char) * 256);
     init_strs(f_names, n_files);
+
+    // char*** f_names = init_strs_dyn(N_FILES);
+    printf("\n");
    
     size_t signus = 1;
 
     size_t file = 0;
-
     for (size_t file = 0; file < n_files; file++) {
+        printf("setting up file: %zd/%hu\t", file + 1, n_files);
 
-        printf("creating: %s\t", f_names[file]);
-     
-        printf("lights ? ");
         init_lights(lights, N_LIGHTS);
+
         for(size_t l = 0; l < VSIZE(lights); l++)
             if(! lights[l].puntual)
                 lights[l].pos = vec_normalize(lights[l].pos);
-        
-        printf("ok |\t");
 
-
-        printf("spheres ? ");
         init_spheres(spheres, N_SPHERES);
-        randomize_spheres(spheres);
-        printf("ok |\t");
-
+   
         if (file % 2)
             signus = -1;
         else 
@@ -200,23 +187,21 @@ int main(int argc, char const *argv[]) {
 
         // ORIGIN
         vec_t ori = (vec_t){0,0, ORIGIN};
+        //char *new_str = malloc(256);
+        //char root[256] = "./renders/";
 
-        
-        color_t paper = color_init_rgb(drand48(), drand48(), drand48());
-
-        printf("file ? ");
+       // new_str = strcpy(new_str, root);
+       // strcat(new_str, f_names[file]);
+      //  printf("\n%s\n", new_str);
         FILE *f = fopen(f_names[file], "w");
-        if (f == NULL) {
-            fprintf(stderr, "error creating file\n");
-            return 1;
-        }
+
         fprintf(f, "P3\n");
         fprintf(f, "%d %d\n", WIDTH, HEIGHT);
         fprintf(f, "255\n");
 
-        
+        randomize_spheres(spheres);
 
-        
+        color_t paper = color_init_rgb(drand48(), drand48(), drand48());
 
         for(int vy = HEIGHT / 2; vy > - HEIGHT / 2; vy--) {
             for(int vx = - WIDTH / 2; vx < WIDTH / 2; vx++) {
@@ -232,9 +217,13 @@ int main(int argc, char const *argv[]) {
                 fprintf(f, "\n");
             }
         }
-        printf("ok ||\n");
+
+        printf("\n");
 
         fclose(f);
     }
+    // free_strs(f_names, N_FILES);
+    // free(f_names[0]);
+    // free(f_names);
     return 0;
 }
