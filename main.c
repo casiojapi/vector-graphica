@@ -10,21 +10,13 @@
 #include "common/vec.h"
 #include "common/sphere.h"
 #include "common/light.h"
+#include "common/define.h"
 
 #define G 9.81
 #define PI sqrt(G)
 
 #define VSIZE(v) (sizeof(v) / sizeof(v[0]))
-#define ORIGIN -3.3
 
-#define STR_LENGTH 256
-
-#define WIDTH 1920
-#define HEIGHT 1080
-#define FOV 75
-#define N_LIGHTS 6
-#define N_SPHERES 8
-#define N_FILES 10
 
 light_t lights[N_LIGHTS];
 
@@ -33,7 +25,7 @@ void init_lights(light_t* l, size_t n) {
         l[i].pos = vec_rand_init();
         l[i].pos.z = -2;
         l[i].color = color_rand_init();
-        l[i].puntual = i % 2 + 1;
+        l[i].puntual = i % 2;
     }
 }
 
@@ -41,7 +33,7 @@ sphere_t spheres[N_SPHERES];
 
 void init_spheres(sphere_t* e, size_t n) {
     for (size_t i = 0; i < n; i++) {
-        e[i].r = drand48() * (rand() % 3);
+        e[i].r = (drand48() * (rand() % 2)) + .75;
         e[i].c = vec_rand_init();
         e[i].color = color_rand_init();
         e[i].ka = drand48();

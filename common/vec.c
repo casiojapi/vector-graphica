@@ -7,6 +7,7 @@
 #include <stdlib.h>
 
 #include "vec.h"
+#include "define.h"
 
 vec_t vec_normalize(vec_t a) {
     double n = vec_norm(a);
@@ -35,8 +36,9 @@ double vec_norm(vec_t a) {
 
 vec_t vec_rand_init() {
     vec_t vec;
-    vec.x = drand48() * ((rand() % 10) - 5);
-    vec.y = drand48() *((rand() % 5) - 2.5);
-    vec.z = rand() % 3;
+    // vec.x = drand48() * ((rand() % 10) - 5);
+    vec.x = drand48() * ((rand() % (WIDTH / 45)) - (WIDTH / 90)) * .85;
+    vec.y = drand48() * ((rand() % (HEIGHT / 45)) - (HEIGHT / 90)) * .85;
+    vec.z = (rand() % 4) - 2;
     return vec;
 }
