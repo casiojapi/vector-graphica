@@ -33,9 +33,13 @@ sphere_t spheres[N_SPHERES];
 
 void init_spheres(sphere_t* e, size_t n) {
     for (size_t i = 0; i < n; i++) {
-        e[i].r = (drand48() * (rand() % 2)) + .75;
+
+        e[i].r = (drand48() * 2.8);
         e[i].c = vec_rand_init();
-        e[i].color = color_rand_init();
+        if (i % 2)
+            e[i].color = color_init_rgb(1.0, .15, .15);
+        else 
+            e[i].color = color_init_rgb(.15, 1.0, .15);
         e[i].ka = drand48();
         e[i].kd = drand48();
         e[i].i = i;
@@ -46,14 +50,14 @@ void vec_randomize(vec_t *vec) {
     vec->x *= (rand()) * drand48();
     vec->y *= (rand()) * drand48();
     vec->z *= (rand()) * drand48();
-    vec->z += 10;
+    vec->z += 12;
 }
 
 void randomize_spheres(sphere_t *spheres) {
     for (size_t i = 0; i < VSIZE(spheres); i++) {
         for (size_t k = 0; k < 3; k++) {
-            vec_randomize(&(spheres[i].c));
-            spheres[i].r *=  10 * drand48();
+           // vec_randomize(&(spheres[i].c));
+           // spheres[i].r *=  10 * drand48();
         }
     }
 }
@@ -118,7 +122,7 @@ void init_strs(char strs[][256], size_t n_strs) {
         strs[i][0] = '\0';
         val_a = rand();
         val_b = rand();
-        sprintf(strs[i], "renders/%d_%zd.ppm", val_a, i +1);
+        sprintf(strs[i], "renders/%zd_%d.ppm", i +1, val_a );
         strs[i][strlen(strs[i])] = '\0';
     }
 }
@@ -191,9 +195,9 @@ int main(int argc, char const *argv[]) {
         fprintf(f, "%d %d\n", WIDTH, HEIGHT);
         fprintf(f, "255\n");
 
-        randomize_spheres(spheres);
+        //randomize_spheres(spheres);
 
-        color_t paper = color_init_rgb(drand48(), drand48(), drand48());
+        color_t paper = color_init_rgb(15.0 / 255, 15.0 / 255, 15.0 / 255);
 
         for(int vy = HEIGHT / 2; vy > - HEIGHT / 2; vy--) {
             for(int vx = - WIDTH / 2; vx < WIDTH / 2; vx++) {
