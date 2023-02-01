@@ -34,7 +34,7 @@ sphere_t spheres[N_SPHERES];
 void init_spheres(sphere_t* e, size_t n) {
     for (size_t i = 0; i < n; i++) {
 
-        e[i].r = (drand48() * 2.8);
+        e[i].r = (drand48() * 1.25);
         e[i].c = vec_rand_init();
         if (i % 2)
             e[i].color = color_init_rgb(1.0, .15, .15);
@@ -43,6 +43,8 @@ void init_spheres(sphere_t* e, size_t n) {
         e[i].ka = drand48();
         e[i].kd = drand48();
         e[i].i = i;
+
+        printf("%f %f %f\n", e[i].c.x, e[i].c.y, e[i].c.z);
     }
 }
 
@@ -54,7 +56,7 @@ void vec_randomize(vec_t *vec) {
 }
 
 void randomize_spheres(sphere_t *spheres) {
-    for (size_t i = 0; i < VSIZE(spheres); i++) {
+    for (size_t i = 0; i < N_SPHERES; i++) {
         for (size_t k = 0; k < 3; k++) {
            // vec_randomize(&(spheres[i].c));
            // spheres[i].r *=  10 * drand48();
@@ -73,7 +75,7 @@ color_t computar(vec_t o, vec_t d, color_t wallpaper) {
     size_t mini = 0;
     double mint = 1e20;
 
-    for(size_t i = 0; i < VSIZE(spheres); i++) {
+    for(size_t i = 0; i < N_SPHERES; i++) {
         double t = sphere_distance(spheres + i, o, d);
         if(t < mint) {
             mini = i;
@@ -90,7 +92,7 @@ color_t computar(vec_t o, vec_t d, color_t wallpaper) {
 
     color_t color = color_sumar((color_t){0, 0, 0}, ambiente, spheres[mini].ka);
 
-    for(size_t l = 0; l < VSIZE(lights); l++) {
+    for(size_t l = 0; l < N_LIGHTS; l++) {
         vec_t dir;
         if(lights[l].puntual)
             dir = vec_normalize(vec_diff(lights[l].pos, p));
@@ -102,11 +104,11 @@ color_t computar(vec_t o, vec_t d, color_t wallpaper) {
             continue;
 
         size_t i;
-        for(i = 0; i < VSIZE(spheres); i++)
+        for(i = 0; i < N_SPHERES; i++)
         if(i != mini && sphere_distance(&spheres[i], p, dir) < 1e20)
             break;
 
-        if(i == VSIZE(spheres))
+        if(i == N_SPHERES)
             color = color_sumar(color, lights[l].color, spheres[mini].kd * nl);
     }
 
@@ -170,7 +172,7 @@ int main(int argc, char const *argv[]) {
 
         init_lights(lights, N_LIGHTS);
 
-        for(size_t l = 0; l < VSIZE(lights); l++)
+        for(size_t l = 0; l < N_LIGHTS; l++)
             if(! lights[l].puntual)
                 lights[l].pos = vec_normalize(lights[l].pos);
 
@@ -188,7 +190,7 @@ int main(int argc, char const *argv[]) {
 
        // new_str = strcpy(new_str, root);
        // strcat(new_str, f_names[file]);
-      //  printf("\n%s\n", new_str);
+       //  printf("\n%s\n", new_str);
         FILE *f = fopen(f_names[file], "w");
 
         fprintf(f, "P3\n");
@@ -197,7 +199,7 @@ int main(int argc, char const *argv[]) {
 
         //randomize_spheres(spheres);
 
-        color_t paper = color_init_rgb(15.0 / 255, 15.0 / 255, 15.0 / 255);
+        color_t paper = color_rand_init();
 
         for(int vy = HEIGHT / 2; vy > - HEIGHT / 2; vy--) {
             for(int vx = - WIDTH / 2; vx < WIDTH / 2; vx++) {
