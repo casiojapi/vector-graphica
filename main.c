@@ -32,7 +32,7 @@ void init_lights(light_t* l, size_t n) {
 
 void init_spheres(sphere_t* e, size_t n) {
     for (size_t i = 0; i < n; i++) {
-        e[i].r = (drand48() * 0.5) + 0.35;
+        e[i].r = (drand48() * 0.35) + 0.35;
         e[i].c = vec_rand_init();
         e[i].color = color_rand_init();
         e[i].ka = drand48();
