@@ -5,6 +5,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #include "common/color.h"
 #include "common/vec.h"
@@ -17,47 +18,27 @@
 
 #define VSIZE(v) (sizeof(v) / sizeof(v[0]))
 
-
 light_t lights[N_LIGHTS];
+sphere_t spheres[N_SPHERES];
 
 void init_lights(light_t* l, size_t n) {
     for (size_t i = 0; i < n; i++) {
         l[i].pos = vec_rand_init();
-        l[i].pos.z = -2;
+        l[i].pos.z += 0.5 * (ORIGIN + 1);
         l[i].color = color_rand_init();
         l[i].puntual = i % 2;
     }
 }
 
-sphere_t spheres[N_SPHERES];
-
 void init_spheres(sphere_t* e, size_t n) {
     for (size_t i = 0; i < n; i++) {
-
-        e[i].r = (drand48() * 0.5) + 0.25;
+        e[i].r = (drand48() * 0.5) + 0.35;
         e[i].c = vec_rand_init();
         e[i].color = color_rand_init();
         e[i].ka = drand48();
         e[i].kd = drand48();
         e[i].i = i;
-
         //printf("%f %f %f\n", e[i].c.x, e[i].c.y, e[i].c.z);
-    }
-}
-
-void vec_randomize(vec_t *vec) {
-    vec->x *= (rand()) * drand48();
-    vec->y *= (rand()) * drand48();
-    vec->z *= (rand()) * drand48();
-    vec->z += 12;
-}
-
-void randomize_spheres(sphere_t *spheres) {
-    for (size_t i = 0; i < N_SPHERES; i++) {
-        for (size_t k = 0; k < 3; k++) {
-           // vec_randomize(&(spheres[i].c));
-           // spheres[i].r *=  10 * drand48();
-        }
     }
 }
 
@@ -72,7 +53,7 @@ color_t computar(vec_t o, vec_t d, color_t wallpaper) {
     size_t mini = 0;
     double mint = 1e20;
 
-    for(size_t i = 0; i < N_SPHERES; i++) {
+    for (size_t i = 0; i < N_SPHERES; i++) {
         double t = sphere_distance(spheres + i, o, d);
         if(t < mint) {
             mini = i;
@@ -80,7 +61,7 @@ color_t computar(vec_t o, vec_t d, color_t wallpaper) {
         }
     }
 
-    if(mint == 1e20)
+    if (mint == 1e20)
         return wallpaper;
 
     vec_t p = inter_line(o, d, mint);
@@ -89,23 +70,23 @@ color_t computar(vec_t o, vec_t d, color_t wallpaper) {
 
     color_t color = color_sumar((color_t){0, 0, 0}, ambiente, spheres[mini].ka);
 
-    for(size_t l = 0; l < N_LIGHTS; l++) {
+    for (size_t l = 0; l < N_LIGHTS; l++) {
         vec_t dir;
-        if(lights[l].puntual)
+        if (lights[l].puntual)
             dir = vec_normalize(vec_diff(lights[l].pos, p));
         else
             dir = lights[l].pos;
 
         double nl = vec_dotprod(dir, n);
-        if(nl < 0)
+        if (nl < 0)
             continue;
 
         size_t i;
-        for(i = 0; i < N_SPHERES; i++)
-        if(i != mini && sphere_distance(&spheres[i], p, dir) < 1e20)
+        for (i = 0; i < N_SPHERES; i++)
+        if (i != mini && sphere_distance(&spheres[i], p, dir) < 1e20)
             break;
 
-        if(i == N_SPHERES)
+        if (i == N_SPHERES)
             color = color_sumar(color, lights[l].color, spheres[mini].kd * nl);
     }
 
@@ -126,14 +107,6 @@ void init_strs(char strs[][256], size_t n_strs) {
     }
 }
 
-void free_strs(char** strs, size_t n) {
-    for (size_t i = 0; i < n; i++)
-        free(strs[i]);
-    free(strs);
-    
-}
-
-#include <time.h>
 int main(int argc, char const *argv[]) {
     srand(time(NULL));
     printf("starting vector-graphica.");
@@ -155,15 +128,11 @@ int main(int argc, char const *argv[]) {
     
     
     char f_names[n_files][256];
-    // f_names[0] = malloc(sizeof(char) * 256);
     init_strs(f_names, n_files);
-
-    // char*** f_names = init_strs_dyn(N_FILES);
     printf("\n");
-   
-    size_t signus = 1;
 
     size_t file = 0;
+
     for (size_t file = 0; file < n_files; file++) {
         printf("setting up file: %zd/%hu\t", file + 1, n_files);
 
@@ -174,27 +143,15 @@ int main(int argc, char const *argv[]) {
                 lights[l].pos = vec_normalize(lights[l].pos);
 
         init_spheres(spheres, N_SPHERES);
-   
-        if (file % 2)
-            signus = -1;
-        else 
-            signus = 1;
 
-        // ORIGIN
-        vec_t ori = (vec_t){0,0, ORIGIN};
-        //char *new_str = malloc(256);
-        //char root[256] = "./renders/";
+        // SET ORIGIN
+        vec_t origin = (vec_t){0,0, ORIGIN};
 
-       // new_str = strcpy(new_str, root);
-       // strcat(new_str, f_names[file]);
-       //  printf("\n%s\n", new_str);
         FILE *f = fopen(f_names[file], "w");
 
         fprintf(f, "P3\n");
         fprintf(f, "%d %d\n", WIDTH, HEIGHT);
         fprintf(f, "255\n");
-
-        //randomize_spheres(spheres);
 
         color_t paper = color_rand_init();
 
@@ -208,17 +165,13 @@ int main(int argc, char const *argv[]) {
 
                 d = vec_normalize(d);
 
-                imprimir_rgb(computar(ori , d, paper), f);
+                imprimir_rgb(computar(origin , d, paper), f);
                 fprintf(f, "\n");
             }
         }
-
         printf("\n");
 
         fclose(f);
     }
-    // free_strs(f_names, N_FILES);
-    // free(f_names[0]);
-    // free(f_names);
     return 0;
 }
