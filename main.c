@@ -34,17 +34,14 @@ sphere_t spheres[N_SPHERES];
 void init_spheres(sphere_t* e, size_t n) {
     for (size_t i = 0; i < n; i++) {
 
-        e[i].r = (drand48() * 1.25);
+        e[i].r = (drand48() * 0.5) + 0.25;
         e[i].c = vec_rand_init();
-        if (i % 2)
-            e[i].color = color_init_rgb(1.0, .15, .15);
-        else 
-            e[i].color = color_init_rgb(.15, 1.0, .15);
+        e[i].color = color_rand_init();
         e[i].ka = drand48();
         e[i].kd = drand48();
         e[i].i = i;
 
-        printf("%f %f %f\n", e[i].c.x, e[i].c.y, e[i].c.z);
+        //printf("%f %f %f\n", e[i].c.x, e[i].c.y, e[i].c.z);
     }
 }
 

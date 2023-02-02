@@ -39,6 +39,6 @@ vec_t vec_rand_init() {
     // vec.x = drand48() * ((rand() % 10) - 5);
     vec.x = drand48() * ((rand() % (WIDTH / 45)) - (WIDTH / 90)) * .35;
     vec.y = drand48() * ((rand() % (HEIGHT / 45)) - (HEIGHT / 90)) * .2;
-    vec.z = (rand() % 4) - 3;
+    vec.z = (rand() % 3) - 2.5;
     return vec;
 }
