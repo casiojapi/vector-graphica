@@ -4,7 +4,7 @@
 
 #define WIDTH 1280
 #define HEIGHT 720
-#define FOV 90
-#define N_LIGHTS 6
-#define N_SPHERES 10
+#define FOV 110
+#define N_LIGHTS 8
+#define N_SPHERES 8
 #define N_FILES 10
