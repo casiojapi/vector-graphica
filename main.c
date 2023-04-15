@@ -13,6 +13,8 @@
 #include "common/light.h"
 #include "common/define.h"
 
+#define USAGE "wrong arguments.\nusage: ./vector-graphica [-w <N>] [-h <N>] [-f <N>] [-n <N>] [-x <N>]\n"
+
 #define G 9.81
 #define PI sqrt(G)
 
@@ -116,14 +118,14 @@ int main(int argc, char const *argv[]) {
     uint16_t n_files = N_FILES;
     for (int i = 1; i < argc; ++i) {
         if (argv[i][0] != '-' || strlen(argv[i]) != 2) {
-            fprintf(stderr, "wrong arguments.\nUse \'./vector-graphica\' or \'./vector-graphica -n <N_FILES>\'.\n");
+            fprintf(stderr, USAGE);
             return 1;
         }
         switch (argv[i][1]) {
             case 'w':
                 ++i;
                 if (i >= argc) {
-                    fprintf(stderr, "wrong arguments.\nUse \'./vector-graphica\' or \'./vector-graphica -n <N_FILES>\'.\n");
+                    fprintf(stderr, USAGE);
                     return 1;
                 }
                 width = (uint16_t) atoi(argv[i]);
@@ -131,7 +133,7 @@ int main(int argc, char const *argv[]) {
             case 'h':
                 ++i;
                 if (i >= argc) {
-                    fprintf(stderr, "wrong arguments.\nUse \'./vector-graphica\' or \'./vector-graphica -n <N_FILES>\'.\n");
+                    fprintf(stderr, USAGE);
                     return 1;
                 }
                 height = (uint16_t) atoi(argv[i]);
@@ -139,7 +141,7 @@ int main(int argc, char const *argv[]) {
             case 'f':
                 ++i;
                 if (i >= argc) {
-                    fprintf(stderr, "wrong arguments.\nUse \'./vector-graphica\' or \'./vector-graphica -n <N_FILES>\'.\n");
+                    fprintf(stderr, USAGE);
                     return 1;
                 }
                 fov = (uint16_t) atoi(argv[i]);
@@ -147,19 +149,19 @@ int main(int argc, char const *argv[]) {
             case 'n':
                 ++i;
                 if (i >= argc) {
-                    fprintf(stderr, "wrong arguments.\nUse \'./vector-graphica\' or \'./vector-graphica -n <N_FILES>\'.\n");
+                    fprintf(stderr, USAGE);
                     return 1;
                 }
                 n_files = (uint16_t) atoi(argv[i]);
                 if (n_files < 1) {
-                    fprintf(stderr, "NON-NEGATIVE NUMBERS, NON-ZERO NUMBERS. N >= 1 PLEASE GOD\n");
+                    fprintf(stderr, USAGE);
                     return 1;
                 }
                 break;
             case 'x':
                 ++i;
                 if (i >= argc) {
-                    fprintf(stderr, "wrong arguments.\nUse \'./vector-graphica\' or \'./vector-graphica -n <N_FILES>\'.\n");
+                    fprintf(stderr, USAGE);
                     return 1;
                 }
                 srand(atoi(argv[i]));
