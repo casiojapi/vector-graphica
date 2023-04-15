@@ -2,7 +2,8 @@ ARGS := \
 	$(if $(w),-w $(w)) \
 	$(if $(h),-h $(h)) \
 	$(if $(f),-f $(f)) \
-	$(if $(n),-n $(n))
+	$(if $(n),-n $(n)) \
+	$(if $(x),-x $(x))
 
 all: app
 run: run_app to_jpg clean_ppm

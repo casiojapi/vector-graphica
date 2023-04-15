@@ -156,6 +156,14 @@ int main(int argc, char const *argv[]) {
                     return 1;
                 }
                 break;
+            case 'x':
+                ++i;
+                if (i >= argc) {
+                    fprintf(stderr, "wrong arguments.\nUse \'./vector-graphica\' or \'./vector-graphica -n <N_FILES>\'.\n");
+                    return 1;
+                }
+                srand(atoi(argv[i]));
+                break;
         }
     }
 
