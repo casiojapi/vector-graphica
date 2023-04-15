@@ -110,23 +110,56 @@ void init_strs(char strs[][256], size_t n_strs) {
 int main(int argc, char const *argv[]) {
     srand(time(NULL));
     printf("starting vector-graphica.");
-    uint16_t n_files;
-    if (argc == 1)
-        n_files = N_FILES;
-    else if ( argc == 3) {
-        n_files = (uint16_t) atoi(argv[2]);
-        if (n_files < 1) {
-            fprintf(stderr, "NON-NEGATIVE NUMBERS, NON-ZERO NUMBERS. N >= 1 PLEASE GOD\n");
+    uint16_t width = WIDTH;
+    uint16_t height = HEIGHT;
+    uint16_t fov = FOV;
+    uint16_t n_files = N_FILES;
+    for (int i = 1; i < argc; ++i) {
+        if (argv[i][0] != '-' || strlen(argv[i]) != 2) {
+            fprintf(stderr, "wrong arguments.\nUse \'./vector-graphica\' or \'./vector-graphica -n <N_FILES>\'.\n");
             return 1;
         }
-            
+        switch (argv[i][1]) {
+            case 'w':
+                ++i;
+                if (i >= argc) {
+                    fprintf(stderr, "wrong arguments.\nUse \'./vector-graphica\' or \'./vector-graphica -n <N_FILES>\'.\n");
+                    return 1;
+                }
+                width = (uint16_t) atoi(argv[i]);
+                break;
+            case 'h':
+                ++i;
+                if (i >= argc) {
+                    fprintf(stderr, "wrong arguments.\nUse \'./vector-graphica\' or \'./vector-graphica -n <N_FILES>\'.\n");
+                    return 1;
+                }
+                height = (uint16_t) atoi(argv[i]);
+                break;
+            case 'f':
+                ++i;
+                if (i >= argc) {
+                    fprintf(stderr, "wrong arguments.\nUse \'./vector-graphica\' or \'./vector-graphica -n <N_FILES>\'.\n");
+                    return 1;
+                }
+                fov = (uint16_t) atoi(argv[i]);
+                break;
+            case 'n':
+                ++i;
+                if (i >= argc) {
+                    fprintf(stderr, "wrong arguments.\nUse \'./vector-graphica\' or \'./vector-graphica -n <N_FILES>\'.\n");
+                    return 1;
+                }
+                n_files = (uint16_t) atoi(argv[i]);
+                if (n_files < 1) {
+                    fprintf(stderr, "NON-NEGATIVE NUMBERS, NON-ZERO NUMBERS. N >= 1 PLEASE GOD\n");
+                    return 1;
+                }
+                break;
+        }
     }
-    else {
-        fprintf(stderr, "wrong arguments.\nUse \'./vector-graphica\' or \'./vector-graphica -n <N_FILES>\'.\n");
-        return 1;
-    }
-    
-    
+
+
     char f_names[n_files][256];
     init_strs(f_names, n_files);
     printf("\n");
@@ -150,17 +183,17 @@ int main(int argc, char const *argv[]) {
         FILE *f = fopen(f_names[file], "w");
 
         fprintf(f, "P3\n");
-        fprintf(f, "%d %d\n", WIDTH, HEIGHT);
+        fprintf(f, "%d %d\n", width, height);
         fprintf(f, "255\n");
 
         color_t paper = color_rand_init();
 
-        for(int vy = HEIGHT / 2; vy > - HEIGHT / 2; vy--) {
-            for(int vx = - WIDTH / 2; vx < WIDTH / 2; vx++) {
+        for(int vy = height / 2; vy > - height / 2; vy--) {
+            for(int vx = - width / 2; vx < width / 2; vx++) {
                 vec_t d = {
                     vx,
                     vy,
-                    WIDTH / 2 / tan(FOV/ 2 * PI / 180)
+                    width / 2 / tan(fov/ 2 * PI / 180)
                 };
 
                 d = vec_normalize(d);
