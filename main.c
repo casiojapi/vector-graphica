@@ -168,7 +168,9 @@ int main(int argc, char const *argv[]) {
                 break;
         }
     }
-
+    if (width < 1 || height < 1 || fov < 1 || n_files < 1) {
+        fprintf(stderr, "NON-NEGATIVE NUMBERS, NON-ZERO NUMBERS. N >= 1 PLEASE GOD\n");
+    }
 
     char f_names[n_files][256];
     init_strs(f_names, n_files);
